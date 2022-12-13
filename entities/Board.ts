@@ -1,5 +1,12 @@
-import { Cell } from "./Cell.ts";
-import { Graph } from "./Graph.ts";
+// @ts-ignore
+import { Cell } from './Cell.ts';
+// @ts-ignore
+import { Graph } from './Graph.ts';
+
+interface IPosition {
+  x: number;
+  y: number;
+}
 
 export class Board {
   #board: Graph<Cell>;
@@ -7,16 +14,15 @@ export class Board {
   #boardDimension = 0;
   #diagonalPoints: [number, number][] = [];
   #reverseDiagonalPoints: [number, number][] = [];
-  #mark = "X";
+  #mark = 'X';
 
   get boardCells() {
-    return this.#board.map((cell) => cell);
+    return this.#board.map((cell) => !!cell);
   }
 
   constructor(size: number) {
     this.#board = new Graph();
     this.initBoard(size);
-    console.log(this.#board.nodes);
   }
 
   get boardDimension(): number {
@@ -32,7 +38,7 @@ export class Board {
   }
 
   #toggleMark(): void {
-    this.#mark = this.#mark === "X" ? "O" : "X";
+    this.#mark = this.#mark === 'X' ? 'O' : 'X';
   }
 
   #calcDiagonalPoints(
@@ -72,18 +78,17 @@ export class Board {
     return coords;
   }
 
-  #createEdges(coords: [number, number][]): void {
-    coords.forEach(([x, y]) => {
-      const node = this.#board.find(node=> node.value.x === x && node.value.y === y) as Cell | undefined;
+  #createEdges(source: IPosition, destination: IPosition): void {
+    console.log(source, destination);
 
-      this.#board.addEdge(x, y);
-    });
+    const sourceNode = this.getCell(source);
+    const destinationNode = this.getCell(source);
+
+    // this.#board.addEdge(source, destination);
   }
 
-  selectCell(x: number, y: number): void {
-    const cell = this.#board.find(
-      (node) => node.value.x === x && node.value.y === y
-    ) as Cell | undefined;
+  selectCell({}): void {
+    const cell = this.getCell(x, y);
 
     if (!cell) return;
     cell.select(this.#mark);
@@ -106,7 +111,7 @@ export class Board {
     );
   }
 
-  getCell(x: number, y: number): Cell | undefined {
+  getCell({ x, y }: IPosition): Cell | undefined {
     return this.#board.find(
       (node) => node.value.x === x && node.value.y === y
     ) as Cell | undefined;

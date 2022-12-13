@@ -1,5 +1,5 @@
-import { GraphTypes } from "../enums/GraphTypes.ts";
-import { Node } from "./Node.ts";
+import { GraphTypes } from '../enums/GraphTypes.ts';
+import { Node } from './Node.ts';
 
 export class Graph<T> {
   nodes: { [key: string]: Node };
@@ -15,8 +15,6 @@ export class Graph<T> {
   }
 
   addNode(value: Node | Record<string, unknown>) {
-    console.log(value instanceof Node);
-
     if (value instanceof Node && this.nodes[value.id]) {
       return value;
     }
@@ -67,23 +65,20 @@ export class Graph<T> {
     }
   }
 
-  getNode(value: T): T | null {
-    for (const node of Object.values(this.nodes)) {
-      if (node === value) {
-        return node as T;
-      }
-    }
+  getNode({ x, y }: { x: number; y: number }): Node | T {
+    const node = Object.values(this.nodes).find(
+      (node) => node.value.x === x && node.value.y === y
+    ) as Node;
 
-    return null;
+    return node;
   }
-
 
   map(callback: (node: T) => boolean): T[] {
     const result: T[] = [];
 
     for (const node of Object.values(this.nodes)) {
-      if(callback(node as T)) {
-        result.push(node as T);
+      if (callback(node as unknown as T)) {
+        result.push(node as unknown as T);
       }
     }
     return result;
@@ -91,8 +86,8 @@ export class Graph<T> {
 
   find(callback: (node: Node) => boolean): T | undefined {
     for (const node of Object.values(this.nodes)) {
-      if (callback(node)) {
-        return node as T;
+      if (callback(node as unknown as Node)) {
+        return node as any;
       }
     }
   }
